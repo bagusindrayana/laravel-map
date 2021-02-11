@@ -1,0 +1,27 @@
+{
+    "name": "bagusindrayana/laravel-map",
+    "description": "map view for laravel",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bagus Indrayana",
+            "email": "bagusindrayanaindo@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "BagusIndrayana\\LaravelMap\\": "src"
+        }
+   
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BagusIndrayana\\LaravelMap\\LaravelMapServiceProvider"
+            ]
+        }
+    }
+}
