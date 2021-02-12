@@ -10,6 +10,7 @@ class MapBox
     public $style;
     public $container;
     public $containerStyle;
+    public $containerClass;
     public $zoom;
     public $center;
     public $minZoom;
@@ -138,7 +139,7 @@ class MapBox
 
     public function render()
     {
-        return '<div id="'.$this->container.'" style="'.$this->containerStyle.'"></div>';
+        return '<div id="'.$this->container.'" class="'.$this->containerClass.'" style="'.$this->containerStyle.'"></div>';
     }
 
     public function addControl($arr)
