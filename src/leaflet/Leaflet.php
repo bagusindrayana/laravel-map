@@ -1,7 +1,9 @@
 <?php
 namespace BagusIndrayana\LaravelMap\Leaflet;
 
-class Leaflet
+use BagusIndrayana\LaravelMap\Js;
+
+class Leaflet extends Js
 {   
     public $css = "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css";
     public $js = "https://unpkg.com/leaflet@1.7.1/dist/leaflet.js";

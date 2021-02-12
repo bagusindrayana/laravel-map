@@ -1,7 +1,9 @@
 <?php
 namespace BagusIndrayana\LaravelMap\MapBox;
 
-class MapBox
+use BagusIndrayana\LaravelMap\Js;
+
+class MapBox extends Js
 {   
     public $css = "https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css";
     public $js = "https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js";
@@ -156,8 +158,15 @@ class MapBox
     }
     
     public function addExtra($extra)
-    {
-        $this->extra .= $extra;
+    {   
+        if(is_string($extra)){
+            $this->extra .= $extra;
+        } else if(is_object($extra)) {
+            $this->extra .= $extra->result();
+        } else {
+            $this->extra .= $extra();
+        }
+        
     }
 
     public function addMarker($m)
@@ -165,12 +174,19 @@ class MapBox
         if(is_array($m)){
             for ($i=0; $i < count($m); $i++) { 
                 $marker = $m[$i];
-                $marker->map = $this;
-               
-                $markers .= "var marker".$i." = ".$marker->result().";";
+                if(is_object($marker)){
+                    $marker->map = $this;
+                    $markers .= "var marker".$i." = ".$marker->result().";";
+                } else {
+                    throw new \Exception("Parameter given is not Marker Object");
+                }
             }
         } else {
-            $markers .= "var marker = ".$m->result().";";
+            if(is_object($m)){
+                $markers .= "var marker = ".$m->result().";";
+            } else {
+                throw new \Exception("Parameter given is not Marker Object");
+            }
         }
 
         $this->extra .= $markers;
@@ -241,12 +257,66 @@ class MapBox
         return '<input type="text" id="'.(@$opts['inputId'] ?? 'coordinat').'" class="'.@$opts['inputClass'].'" name="'.@$opts['inputName'].'">';
     }
 
-    public function loadImage($url,$fun,$name = null)
-    {
-        $this->extra .= "$this->varName.loadImage('$url', function (error, image) { 
-            if (error) throw error;
-                $this->varName.addImage('".($name ?? 'custom-marker')."', image);";
-        $fun($this);
+    public function loadImage($image,$fun)
+    {   
+        $imageVar = [
+            "type"=>"variable",
+            "name"=>"image"
+        ];
+        $errorVar = [
+            "type"=>"variable",
+            "name"=>"error"
+        ];
+        if(is_array($image)){
+            $imageVar["name"] = $image[2];
+            $errorVar["name"] = $image[1];
+            $this->extra .= "$this->varName.loadImage('$image[0]', function (".($image[1] ?? 'error').", ".($image[2] ?? 'image').") {";
+        } else {
+            $this->extra .= "$this->varName.loadImage('$image', function (error, image) {";
+            $this->extra .= "if (error) throw error;$this->varName.addImage('".($image ?? 'custom-marker')."', image);";
+        }
+        
+
+        $fun($this,$errorVar,$imageVar);
         $this->extra .= "});";
+    }
+
+    public function addImage($id,$img,$opts = null)
+    {   
+        if(is_array($img)){
+            $this->extra .= $this->varName.".addImage('".$id."',".$img["name"].(($opts)?",".json_encode($opts):"").");";
+        } else {
+            $this->extra .= $this->varName.".addImage('".$id."','".$img."'".(($opts)?"',".json_encode($opts):"").");";
+        }
+    }
+
+    public function hasImage($id,$fun = null)
+    {   
+        if($fun == null){
+            if(is_array($id)){
+                return ((!isset($id[2]))?$id[1]:"").$this->varName.".hasImage('$id[0]')".((isset($id[2]))?$id[1].' '.$id[2]:"");
+            } else {
+                return $this->varName.".hasImage('$id')";
+            }
+        }
+        if(is_array($id)){
+            $this->extra .= "if(".((!isset($id[2]))?$id[1]:"").$this->varName.".hasImage('$id[0]')".((isset($id[2]))?$id[1].' '.$id[2]:"")."){";
+                $fun($this);
+            $this->extra .= "}";
+            
+        } else {
+            $this->extra .= "if(".$this->varName.".hasImage('$id')){";
+                $fun($this);
+            $this->extra .= "}";
+        }
+    }
+
+    public function updateImage($id,$img)
+    {
+        if(is_array($img)){
+            $this->extra .= $this->varName.".updateImage('".$id."',".$img["name"].");";
+        } else {
+            $this->extra .= $this->varName.".updateImage('".$id."','".$img."'".");";
+        }
     }
 }
