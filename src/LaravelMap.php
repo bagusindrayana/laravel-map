@@ -101,32 +101,6 @@ class LaravelMap
             $this->styles = $styles;
         }
         return view('laravel-map::styles',['styles'=>$this->styles]);
-        
-        // switch ($this->provider) {
-        //     case 'mapbox':
-        //         $val = ['mapbox'=>$this->map];
-                
-        //         if($styles != null){
-        //             $this->styles = array_merge($this->styles,$styles);
-        //             $val['styles'] = $this->styles;
-        //         }          
-                     
-        //         return view('laravel-map::mapbox-styles',$val);
-        //         break;
-        //     case 'leaflet':
-        //         $val = ['leaflet'=>$this->map];
-                
-        //         if($styles != null){
-        //             $this->styles = array_merge($this->styles,$styles);
-        //             $val['styles'] = $this->styles;
-        //         }          
-                        
-        //         return view('laravel-map::leaflet-styles',$val);
-        //         break;
-        //     default:
-        //         return "";
-        //         break;
-        // }
     }
 
     public function setScripts()
@@ -160,27 +134,6 @@ class LaravelMap
             $this->scripts = $scripts;
         }
         return view('laravel-map::scripts',['scripts'=>$this->scripts,'extra'=>$this->extra]);
-        // switch ($this->provider) {
-        //     case 'mapbox':
-        //         $val = ['mapbox'=>$this->map,'extra'=>$this->map->extra];
-        //         if($scripts != null){
-        //             $this->scripts = array_merge($this->scripts,$scripts);
-        //             $val['scripts'] = $this->scripts;
-        //         }
-        //         return view('laravel-map::mapbox-scripts',$val);
-        //         break;
-        //     case 'leaflet':
-        //         $val = ['leaflet'=>$this->map];
-        //         if($scripts != null){
-        //             $this->scripts = array_merge($this->scripts,$scripts);
-        //             $val['scripts'] = $this->scripts;
-        //         }
-        //         return view('laravel-map::leaflet-scripts',$val);
-        //         break;
-        //     default:
-        //         return "";
-        //         break;
-        // }
     }
 
 

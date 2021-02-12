@@ -22,14 +22,6 @@ class MapboxGeocoder
         foreach ($opts as $k => $v) {
             $this->$k = $v;
         }
-        // $this->options = $opts;
-        // if(!isset($this->options['accessToken'])){
-        //     $this->options['accessToken'] = $this->accessToken;
-        // }
-
-        // if(!isset($this->options['mapboxgl'])){
-        //     $this->options['mapboxgl'] = 'mapboxgl';
-        // }
     }
 
     public function getOptions()
