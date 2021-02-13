@@ -58,7 +58,7 @@ class Popup
         $this->map = $map;
         return "var ".$this->popupName." = new mapboxgl.Popup(".$this->getOptions().")
         ".(($this->html)? ".setHTML(".$this->html.")" : "" )."
-        ".(($this->lngLat)? ".setLngLat(".json_encode($this->lngLat).")" : "" )."
+        ".(($this->lngLat)?((is_array($this->lngLat))?".setLngLat(".json_encode($this->lngLat).")":".setLngLat(".($this->lngLat)).")":"")."
         ".(($this->text)? ".setText(".$this->text.")" : "" )."
         .addTo(".$this->map->varName.");";
     }
@@ -78,7 +78,7 @@ class Popup
     {
         return "new mapboxgl.Popup(".$this->getOptions().")
         ".(($this->html)? ".setHTML(".$this->html.")" : "" )."
-        ".(($this->lngLat)? ".setLngLat(".json_encode($this->lngLat).")" : "" )."
+        ".(($this->lngLat)?((is_array($this->lngLat))?".setLngLat(".json_encode($this->lngLat).")":".setLngLat(".($this->lngLat)).")":"")."
         ".(($this->text)? ".setText('".$this->text."')" : "" );
     }
 

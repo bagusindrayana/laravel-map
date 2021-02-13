@@ -136,6 +136,21 @@ class LaravelMap
         return view('laravel-map::scripts',['scripts'=>$this->scripts,'extra'=>$this->extra]);
     }
 
+    public function requestCurrentLocation($varName,$fun)
+    {   
+        
+        $this->map->extra .= "if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function($varName){
+                ";
+        $fun($this->map);
+        $this->map->extra .= "
+            });
+          } else {
+            alert('Geolocation is not supported by this browser');
+          }";
+         
+    }
+
 
     
 

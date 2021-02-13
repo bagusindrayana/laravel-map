@@ -55,7 +55,7 @@ class Marker
     {
         $this->map = $map;
         return "var ".$this->markerName." = new mapboxgl.Marker(".$this->getOptions().")
-        ".(($this->lngLat)? ".setLngLat(".json_encode($this->lngLat).")" : "" )."
+        ".(($this->lngLat)?((is_array($this->lngLat))?".setLngLat(".json_encode($this->lngLat).")":".setLngLat(".($this->lngLat)).")":"")."
         .addTo(".$this->map->varName.");";
     }
     public function setPopup($popup)
@@ -67,7 +67,7 @@ class Marker
     public function result()
     {
         return "new mapboxgl.Marker(".$this->getOptions().")
-        ".(($this->lngLat)? ".setLngLat(".json_encode($this->lngLat).")" : "" )."
+        ".(($this->lngLat)?((is_array($this->lngLat))?".setLngLat(".json_encode($this->lngLat).")":".setLngLat(".($this->lngLat)).")":"")."
         ".(($this->popup)? ".setPopup(".$this->popup->result().")" : "" )."
         .addTo(".$this->map->varName.")";
     }

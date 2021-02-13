@@ -61,6 +61,7 @@ class MapBox extends Js
     public function __construct($opts = null) {
         $this->setOption($opts);
         $this->accessToken = config('laravel-map.mapbox-access-token');
+        $this->extra .= $this->baseJs();
        
     }
 
@@ -76,8 +77,8 @@ class MapBox extends Js
 
     public function renderScript()
     {
-        $scripts = $this->baseJs();
-        $scripts .= $this->extra ?? "";
+        // $scripts = $this->baseJs();
+        $scripts = $this->extra ?? "";
         return $scripts;
     }
 
@@ -88,7 +89,7 @@ class MapBox extends Js
             ".(($this->style)? "style:'".$this->style."'," : "" )."
             ".(($this->container)? "container:'".$this->container."'," : "" )."
             ".(($this->zoom)? "zoom:".$this->zoom."," : "" )."
-            ".(($this->center)? "center:".json_encode($this->center)."," : "" )."
+            ".(($this->center)?((is_array($this->center))?"center:".json_encode($this->center):"center:".$this->center).",":"")."
             ".(($this->minZoom)? "minZoom:".$this->minZoom."," : "" )."
             ".(($this->maxZoom)? "maxZoom:".$this->maxZoom."," : "" )."
             ".(($this->minPitch)? "minPitch:".$this->minPitch."," : "" )."
@@ -183,6 +184,7 @@ class MapBox extends Js
             }
         } else {
             if(is_object($m)){
+                $m->map = $this;
                 $markers .= "var marker = ".$m->result().";";
             } else {
                 throw new \Exception("Parameter given is not Marker Object");
@@ -318,5 +320,20 @@ class MapBox extends Js
         } else {
             $this->extra .= $this->varName.".updateImage('".$id."','".$img."'".");";
         }
+    }
+
+    public function flyTo($opts)
+    {   
+        $formatOpts = "{
+            ".((isset($opts['center']))?((is_array($opts['center']))?"center:".json_encode($opts['center']):"center:".$opts['center']).",":"")."
+            ".((isset($opts['zoom']))? "zoom:".$opts['zoom']."," : "" )."
+            ".((isset($opts['speed']))? "speed:".$opts['speed']."," : "" )."
+            ".((isset($opts['curve']))? "curve:".$opts['curve']."," : "" )."
+            ".((isset($opts['minZoom']))? "minZoom:".$opts['minZoom']."," : "" )."
+            ".((isset($opts['screenSpeed']))? "screenSpeed:".$opts['screenSpeed']."," : "" )."
+            ".((isset($opts['maxDuration']))? "maxDuration:".$opts['maxDuration']."," : "" )."
+            ".((isset($opts['bearing']))? "bearing:".$opts['bearing'] : "" )."
+        }";
+        $this->extra .= $this->varName.".flyTo(".trim(preg_replace('/\s\s+/', ' ',$formatOpts)).");";
     }
 }
