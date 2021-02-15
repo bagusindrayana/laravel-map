@@ -10,7 +10,10 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "nikic/php-parser": "4.10 as v3.0.0alpha1",
+        "mostka/phptojs": "9999999-dev"
+    },
     "autoload": {
         "psr-4": {
             "BagusIndrayana\\LaravelMap\\": "src"

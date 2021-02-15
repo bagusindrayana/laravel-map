@@ -6,5 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'phptojs\\' => array($vendorDir . '/mostka/phptojs/lib/phptojs'),
+    'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
     'BagusIndrayana\\LaravelMap\\' => array($baseDir . '/src'),
 );

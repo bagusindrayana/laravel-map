@@ -2,6 +2,8 @@
 namespace BagusIndrayana\LaravelMap\MapBox;
 
 use BagusIndrayana\LaravelMap\Js;
+use Error;
+use PhpParser\ParserFactory;
 
 class MapBox extends Js
 {   
@@ -259,27 +261,12 @@ class MapBox extends Js
         return '<input type="text" id="'.(@$opts['inputId'] ?? 'coordinat').'" class="'.@$opts['inputClass'].'" name="'.@$opts['inputName'].'">';
     }
 
-    public function loadImage($image,$fun)
-    {   
-        $imageVar = [
-            "type"=>"variable",
-            "name"=>"image"
-        ];
-        $errorVar = [
-            "type"=>"variable",
-            "name"=>"error"
-        ];
-        if(is_array($image)){
-            $imageVar["name"] = $image[2];
-            $errorVar["name"] = $image[1];
-            $this->extra .= "$this->varName.loadImage('$image[0]', function (".($image[1] ?? 'error').", ".($image[2] ?? 'image').") {";
-        } else {
-            $this->extra .= "$this->varName.loadImage('$image', function (error, image) {";
-            $this->extra .= "if (error) throw error;$this->varName.addImage('".($image ?? 'custom-marker')."', image);";
-        }
-        
-
-        $fun($this,$errorVar,$imageVar);
+    public function loadImage($url,$fun,$name = null)
+    {
+        $this->extra .= "$this->varName.loadImage('$url', function (error, image) { 
+            if (error) throw error;
+                $this->varName.addImage('".($name ?? 'custom-marker')."', image);";
+        $fun($this);
         $this->extra .= "});";
     }
 

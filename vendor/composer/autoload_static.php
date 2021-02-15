@@ -7,6 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInitbc725b6579403ee0f864cfe92cce460b
 {
     public static $prefixLengthsPsr4 = array (
+        'p' => 
+        array (
+            'phptojs\\' => 8,
+        ),
+        'P' => 
+        array (
+            'PhpParser\\' => 10,
+        ),
         'B' => 
         array (
             'BagusIndrayana\\LaravelMap\\' => 26,
@@ -14,6 +22,14 @@ class ComposerStaticInitbc725b6579403ee0f864cfe92cce460b
     );
 
     public static $prefixDirsPsr4 = array (
+        'phptojs\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mostka/phptojs/lib/phptojs',
+        ),
+        'PhpParser\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
+        ),
         'BagusIndrayana\\LaravelMap\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
