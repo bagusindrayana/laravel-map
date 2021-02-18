@@ -67,7 +67,7 @@ class MapBox extends Js
     public function baseJs()
     {
         $js = "
-            mapboxgl.accessToken = '".$this->accessToken."';
+            mapboxgl.accessToken = '".(($this->accessToken)? $this->accessToken : (function_exists('config')?config('laravel-map.mapbox-access-token'):"") )."';
             var ".$this->varName." = new mapboxgl.Map(".$this->getOptions().");
         ";
 

@@ -125,16 +125,21 @@ class Js
                 if($loop->var instanceof Variable){
                     $this->extra .= "var ".$loop->var->name." = ";
                 }
+                
                 if($loop->expr){
                     $this->loop($loop->expr);
                 }
 
-                
-            } else if($loop instanceof Variable){
-                $this->extra .= $loop->name;
                 if($this->semicolon){
                     $this->extra .= ";";
                 }
+
+                
+
+                
+            } else if($loop instanceof Variable){
+                $this->extra .= $loop->name;
+                
             } else if($loop instanceof Plus){
                 if(!$loop->left instanceof Variable && !$loop->left instanceof LNumber){
                     if(isset($loop->left->left)){
@@ -225,6 +230,7 @@ class Js
                 if($this->semicolon){
                     $this->extra .= ";";
                 }
+                
             } else if($loop instanceof Arg){
                 if($this->index > 0){
                     $this->extra .= ",";
@@ -295,16 +301,14 @@ class Js
                 if(isset($loop->name)){
                     $this->loop($loop->name,@$attr);
                 }
-                $this->extra .= "(";
                 $this->semicolon = false;
+                $this->extra .= "(";
                 if(isset($loop->args)){
                     $this->loop($loop->args,@$attr);
                 }
-                $this->semicolon = true;
                 $this->extra .= ")";
-                if($this->semicolon){
-                    $this->extra .= ";";
-                }
+                $this->semicolon = true;
+                
                 
             } else if($loop instanceof ArrayDimFetch){
                 if(isset($loop->var)){
@@ -536,7 +540,7 @@ class Js
         $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         try {
             $ast = $parser->parse($code);
-        } catch (Error $error) {
+        } catch (Error $error) {  
             throw new Exception("Invalid code format : ".$code);
             return;
         }
@@ -577,6 +581,10 @@ class Js
 
        
         return $js;
+    }
+
+    function result(){
+        return $this->cleanScript($this->extra);
     }
 
 

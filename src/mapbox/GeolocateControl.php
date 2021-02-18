@@ -27,7 +27,7 @@ class GeolocateControl
     public function getOptions()
     {
         $opts = "{
-            ".(($this->positionOptions)? "positionOptions:".$this->positionOptions."," : "" )."
+            ".(($this->positionOptions)? "positionOptions:".json_encode($this->positionOptions)."," : "" )."
             ".(($this->fitBoundsOptions)? "fitBoundsOptions:".$this->fitBoundsOptions."," : "" )."
             ".(($this->trackUserLocation)? "trackUserLocation:".$this->trackUserLocation."," : "" )."
             ".(($this->showAccuracyCircle)? "showAccuracyCircle:".$this->showAccuracyCircle."," : "" )."
