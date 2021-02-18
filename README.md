@@ -103,4 +103,5 @@ Leaflet - https://leafletjs.com/reference-1.7.1.html
 
 
 DOCS : https://laravel-map-docs.netlify.app
+
 EXAMPLE REPO : https://github.com/bagusindrayana/laravel-map-example
