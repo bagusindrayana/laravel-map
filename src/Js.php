@@ -1,6 +1,7 @@
 <?php
 namespace BagusIndrayana\LaravelMap;
 
+use Exception;
 use phpDocumentor\Reflection\Types\Boolean;
 use PhpParser\Error;
 use PhpParser\Node;
@@ -536,7 +537,7 @@ class Js
         try {
             $ast = $parser->parse($code);
         } catch (Error $error) {
-            dd("Parse error: {$error->getMessage()}\n");
+            throw new Exception("Invalid code format : ".$code);
             return;
         }
         //dd($ast);
