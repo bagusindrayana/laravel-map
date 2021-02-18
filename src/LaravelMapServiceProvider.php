@@ -13,7 +13,7 @@ class LaravelMapServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->mergeConfigFrom(__DIR__.'/../resources/config/laravel-map.php', 'laravel-map');
     }
 
     /**

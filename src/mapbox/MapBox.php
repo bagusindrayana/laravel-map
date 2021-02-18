@@ -2,8 +2,6 @@
 namespace BagusIndrayana\LaravelMap\MapBox;
 
 use BagusIndrayana\LaravelMap\Js;
-use Error;
-use PhpParser\ParserFactory;
 
 class MapBox extends Js
 {   
@@ -62,7 +60,6 @@ class MapBox extends Js
 
     public function __construct($opts = null) {
         $this->setOption($opts);
-        $this->accessToken = config('laravel-map.mapbox-access-token');
         $this->extra .= $this->baseJs();
        
     }
@@ -74,7 +71,7 @@ class MapBox extends Js
             var ".$this->varName." = new mapboxgl.Map(".$this->getOptions().");
         ";
 
-        return $js;
+        return $this->cleanScript($js);
     }
 
     public function renderScript()
@@ -87,7 +84,7 @@ class MapBox extends Js
     public function getOptions()
     {   
         $opts = "{
-            ".(($this->accessToken)? "accessToken:'".$this->accessToken."'," : "" )."
+            "."accessToken:'".(($this->accessToken)? $this->accessToken : (function_exists('config')?config('laravel-map.mapbox-access-token'):"") )."',
             ".(($this->style)? "style:'".$this->style."'," : "" )."
             ".(($this->container)? "container:'".$this->container."'," : "" )."
             ".(($this->zoom)? "zoom:".$this->zoom."," : "" )."
@@ -132,7 +129,7 @@ class MapBox extends Js
             ".(($this->crossSourceCollisions)? "crossSourceCollisions:".$this->crossSourceCollisions."," : "" )."
             ".(($this->locale)? "locale:".$this->locale."," : "" )."
         }";
-        return trim(preg_replace('/\s\s+/', ' ',$opts));
+        return $this->cleanScript($opts);
     }
 
     public function setOption($opts)

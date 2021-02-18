@@ -20,7 +20,7 @@ class Leaflet extends Js
 
     public function __construct($opts = null) {
         $this->setOption($opts);
-        $this->accessToken = config('laravel-map.mapbox-access-token');
+       
         $this->extra .= $this->baseJs();
         
     }
@@ -31,7 +31,7 @@ class Leaflet extends Js
             var ".$this->varName." = L.map('".$this->container."');
         ";
 
-        return $js;
+        return $this->cleanScript($js);
     }
 
     public function renderScript()

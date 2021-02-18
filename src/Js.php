@@ -35,6 +35,8 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Expression;
@@ -58,6 +60,11 @@ class Js
 
     public function __construct() {
         
+    }
+
+    public function cleanScript($script)
+    {
+        return trim(preg_replace('/\s+/'," ",$script));
     }
 
     public function if($check,$fun)
@@ -94,14 +101,12 @@ class Js
                     $this->loop($loop->name);
                 }
                 $this->extra .= '(';
+                $this->semicolon = false;
                 if(isset($loop->params)){
                     $this->loop($loop->params);
                 }
                 $this->extra .= ')';
-                // $params = [];
-                // foreach ($loop->params as $kp => $vp) {
-                //     $params[] = $vp->var->name;
-                // }
+                $this->semicolon = true;
                 $this->extra .= '{';
                 if($loop->stmts){
                     $this->loop($loop->stmts);
@@ -123,9 +128,12 @@ class Js
                     $this->loop($loop->expr);
                 }
 
-                $this->extra .= ";";
+                
             } else if($loop instanceof Variable){
                 $this->extra .= $loop->name;
+                if($this->semicolon){
+                    $this->extra .= ";";
+                }
             } else if($loop instanceof Plus){
                 if(!$loop->left instanceof Variable && !$loop->left instanceof LNumber){
                     if(isset($loop->left->left)){
@@ -287,9 +295,11 @@ class Js
                     $this->loop($loop->name,@$attr);
                 }
                 $this->extra .= "(";
+                $this->semicolon = false;
                 if(isset($loop->args)){
                     $this->loop($loop->args,@$attr);
                 }
+                $this->semicolon = true;
                 $this->extra .= ")";
                 if($this->semicolon){
                     $this->extra .= ";";
@@ -455,6 +465,33 @@ class Js
                  }
                 
                 
+            } else if($loop instanceof Class_){
+                $this->extra .= "class ";
+                if($loop->name){
+                    $this->loop($loop->name);
+                }
+                $this->extra .= " {";
+                if($loop->stmts){
+                    $this->loop($loop->stmts);
+                }
+                $this->extra .= "}";
+                
+            } else if($loop instanceof ClassMethod){
+                $this->extra .= "function ";
+                if($loop->name){
+                    $this->loop($loop->name);
+                }
+                $this->extra .= "(";
+                $this->semicolon = false;
+                if($loop->params){
+                    $this->loop($loop->params);
+                }
+                $this->extra .= "){";
+                $this->semicolon = true;
+                if($loop->stmts){
+                    $this->loop($loop->stmts);
+                }
+                $this->extra .= "}";
             }
 
             $this->index ++;
@@ -492,23 +529,8 @@ class Js
       
         $code = "<?php ";
         $str = $this->get_function($fun);
-        
-        // if($ignore){
-        //     if(is_array($ignore)){
-        //         $needle = $ignore[0];
-        //         $str = substr($str, strpos($str, $needle) + strlen($needle));
-        //         $needle = $ignore[1];
-        //         $str = substr($str,0,strlen($str)-strlen($needle));
-                
-        //     } else {
-        //         $needle = $ignore;
-        //         $str = substr($str, strpos($str, $needle) + strlen($needle));
-        //     }
-          
-        // }
        
         $code .= $str;
-        // dd($code);
        
         $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         try {
@@ -517,11 +539,8 @@ class Js
             dd("Parse error: {$error->getMessage()}\n");
             return;
         }
-        $this->loop($ast);
-        //die($this->extra);
-        // $dumper = new NodeDumper();
         //dd($ast);
-       
+        $this->loop($ast);
     }
 
     public static function ajax($type,$url,$datas = null,$headers = null)
