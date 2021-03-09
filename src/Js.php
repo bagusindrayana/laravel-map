@@ -29,6 +29,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\PostInc;
 use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
@@ -38,9 +39,12 @@ use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Echo_;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\For_;
+use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
@@ -131,7 +135,7 @@ class Js
                 }
 
                 if($this->semicolon){
-                    $this->extra .= ";";
+                    $this->extra .= ";\n";
                 }
 
                 
@@ -228,7 +232,7 @@ class Js
                 }
                 $this->extra .= ")";
                 if($this->semicolon){
-                    $this->extra .= ";";
+                    $this->extra .= ";\n";
                 }
                 
             } else if($loop instanceof Arg){
@@ -497,6 +501,62 @@ class Js
                     $this->loop($loop->stmts);
                 }
                 $this->extra .= "}";
+            } else if($loop instanceof For_){
+                $this->extra .= "for(";
+                if($loop->init){
+                    $this->loop($loop->init);
+                }
+
+                if($loop->cond){
+                    $this->loop($loop->cond);
+                }
+                $this->extra .= ";";  
+                if($loop->loop){
+                    $this->loop($loop->loop);
+                }
+                $this->extra .= "){";
+
+                if($loop->stmts){
+                    $this->loop($loop->stmts);
+                }
+
+                $this->extra .= "}";  
+                
+            } else if($loop instanceof PostInc){
+                if($loop->var){
+                    $this->loop($loop->var);
+                }
+                $this->semicolon = false;
+                $this->extra .= "++";
+            } else if($loop instanceof Foreach_){
+                $this->extra .= "for(";
+                
+                if($loop->keyVar){
+                     $this->extra .= "let [".$loop->keyVar->name;
+                     if($loop->valueVar){
+                        $this->extra .= ",".$loop->valueVar->name;
+                     }
+                     $this->extra .= "] of Object.entries(".$loop->expr->name.")";
+                } else {
+                    if($loop->valueVar){
+                        $this->extra .= $loop->valueVar->name;
+                    }
+                    $this->extra .= " in ".$loop->expr->name;
+                }   
+                
+                $this->extra .= "){";
+
+                if($loop->stmts){
+                    $this->loop($loop->stmts);
+                }
+
+                $this->extra .= "}";  
+            } else if($loop instanceof Echo_){
+                $this->extra .= "console.log(";
+                if($loop->exprs){
+                    $this->loop($loop->exprs);
+                }
+                $this->extra .= ");";  
             }
 
             $this->index ++;

@@ -39,9 +39,9 @@ class Marker
         $opts = "{
             ".(($this->element)? "element:".$this->element."," : "" )."
             ".(($this->anchor)? "anchor:'".$this->anchor."'," : "" )."
-            ".(($this->offset)? "element:".$this->offset."," : "" )."
-            ".(($this->color)? "anchor:'".$this->color."'," : "" )."
-            ".(($this->scale)? "element:".$this->scale."," : "" )."
+            ".(($this->offset)? "offset:".$this->offset."," : "" )."
+            ".(($this->color)? "color:'".$this->color."'," : "" )."
+            ".(($this->scale)? "scale:".$this->scale."," : "" )."
         }";
         return trim(preg_replace('/\s\s+/', ' ',$opts));
     }
@@ -55,7 +55,7 @@ class Marker
     {
         $this->map = $map;
         return "var ".$this->markerName." = new mapboxgl.Marker(".$this->getOptions().")
-        ".(($this->lngLat)?((is_array($this->lngLat))?".setLngLat(".json_encode($this->lngLat).")":".setLngLat(".($this->lngLat)).")":"")."
+        ".(($this->lngLat)?((is_array($this->lngLat))?".setLngLat(".json_encode($this->lngLat).")":(".setLngLat(".($this->lngLat)).")"):"")."
         .addTo(".$this->map->varName.");";
     }
     public function setPopup($popup)

@@ -46,7 +46,7 @@ class Marker
             ".(($this->opacity)? "opacity:".$this->opacity."," : "" )."
             ".(($this->riseOnHover)? "riseOnHover:".$this->riseOnHover."," : "" )."
             ".(($this->riseOffset)? "riseOffset:".$this->riseOffset."," : "" )."
-            ".(($this->pane)? "pane:'".$this->riseOffset."'," : "" )."
+            ".(($this->pane)? "pane:'".$this->pane."'," : "" )."
             ".(($this->shadowPane)? "shadowPane':".$this->shadowPane."'," : "" )."
             ".(($this->bubblingMouseEvents)? "bubblingMouseEvents:".$this->bubblingMouseEvents."," : "" )."
         }";
