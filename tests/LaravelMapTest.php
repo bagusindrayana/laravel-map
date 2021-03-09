@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-use BagusIndrayana\LaravelMap\LaravelMap;
+use Bagusindrayana\LaravelMap\LaravelMap;
 use PHPUnit\Framework\TestCase;
 
 

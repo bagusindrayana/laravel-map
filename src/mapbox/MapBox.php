@@ -1,7 +1,7 @@
 <?php
-namespace BagusIndrayana\LaravelMap\MapBox;
+namespace Bagusindrayana\LaravelMap\MapBox;
 
-use BagusIndrayana\LaravelMap\Js;
+use Bagusindrayana\LaravelMap\Js;
 
 class MapBox extends Js
 {   

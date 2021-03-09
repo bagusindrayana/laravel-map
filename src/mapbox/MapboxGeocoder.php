@@ -1,5 +1,5 @@
 <?php
-namespace BagusIndrayana\LaravelMap\MapBox;
+namespace Bagusindrayana\LaravelMap\MapBox;
 
 class MapboxGeocoder
 {   

@@ -15,17 +15,17 @@
     },
     "autoload": {
         "psr-4": {
-            "BagusIndrayana\\LaravelMap\\": "src/",
-            "BagusIndrayana\\LaravelMap\\Mapbox\\": "src/mapbox/",
-            "BagusIndrayana\\LaravelMap\\LeafLet\\": "src/leaflet/",
-            "BagusIndrayana\\LaravelMap\\Tests\\": "test/"
+            "Bagusindrayana\\LaravelMap\\": "src/",
+            "Bagusindrayana\\LaravelMap\\Mapbox\\": "src/mapbox/",
+            "Bagusindrayana\\LaravelMap\\LeafLet\\": "src/leaflet/",
+            "Bagusindrayana\\LaravelMap\\Tests\\": "test/"
         }
    
     },
     "extra": {
         "laravel": {
             "providers": [
-                "BagusIndrayana\\LaravelMap\\LaravelMapServiceProvider"
+                "Bagusindrayana\\LaravelMap\\LaravelMapServiceProvider"
             ]
         }
     },

@@ -1,7 +1,7 @@
 <?php
-namespace BagusIndrayana\LaravelMap\Leaflet;
+namespace Bagusindrayana\LaravelMap\Leaflet;
 
-use BagusIndrayana\LaravelMap\Js;
+use Bagusindrayana\LaravelMap\Js;
 
 class Leaflet extends Js
 {   

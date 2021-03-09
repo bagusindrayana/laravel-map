@@ -1,5 +1,5 @@
 <?php
-namespace BagusIndrayana\LaravelMap;
+namespace Bagusindrayana\LaravelMap;
 
 use Exception;
 use phpDocumentor\Reflection\Types\Boolean;

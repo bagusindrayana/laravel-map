@@ -1,5 +1,5 @@
 <?php
-namespace BagusIndrayana\LaravelMap\Leaflet;
+namespace Bagusindrayana\LaravelMap\Leaflet;
 
 class Marker
 {   

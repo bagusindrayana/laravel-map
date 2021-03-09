@@ -1,8 +1,8 @@
 <?php
-namespace BagusIndrayana\LaravelMap;
+namespace Bagusindrayana\LaravelMap;
 
-use BagusIndrayana\LaravelMap\Leaflet\Leaflet;
-use BagusIndrayana\LaravelMap\MapBox\MapBox;
+use Bagusindrayana\LaravelMap\Leaflet\Leaflet;
+use Bagusindrayana\LaravelMap\MapBox\MapBox;
 
 class LaravelMap
 {   

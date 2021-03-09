@@ -1,6 +1,6 @@
 <?php
 
-namespace BagusIndrayana\LaravelMap;
+namespace Bagusindrayana\LaravelMap;
 
 use Illuminate\Support\ServiceProvider;
 
