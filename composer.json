@@ -15,8 +15,8 @@
     },
     "autoload": {
         "psr-4": {
-            "BagusIndrayana\\LaravelMap\\": "src",
-            "BagusIndrayana\\LaravelMap\\Tests\\": "test"
+            "BagusIndrayana\\LaravelMap\\": "src/",
+            "BagusIndrayana\\LaravelMap\\Tests\\": "test/"
         }
    
     },
