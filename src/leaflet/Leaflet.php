@@ -20,7 +20,6 @@ class Leaflet extends Js
 
     public function __construct($opts = null) {
         $this->setOption($opts);
-       
         $this->extra .= $this->baseJs();
         
     }
@@ -37,9 +36,10 @@ class Leaflet extends Js
     public function renderScript()
     {
         //$scripts = $this->baseJs();
-        $scripts = $this->event ?? "";
+        
+        $scripts = $this->extra ?? "";
+        $scripts .= $this->event ?? "";
         $scripts .= $this->varName.".setView(".json_encode($this->center).",".$this->zoom.");";
-        $scripts .= $this->extra ?? "";
 
         return $scripts;
     }
