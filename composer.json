@@ -16,6 +16,8 @@
     "autoload": {
         "psr-4": {
             "BagusIndrayana\\LaravelMap\\": "src/",
+            "BagusIndrayana\\LaravelMap\\Mapbox\\": "src/mapbox/",
+            "BagusIndrayana\\LaravelMap\\LeafLet\\": "src/leaflet/",
             "BagusIndrayana\\LaravelMap\\Tests\\": "test/"
         }
    
