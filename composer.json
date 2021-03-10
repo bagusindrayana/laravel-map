@@ -15,12 +15,15 @@
     },
     "autoload": {
         "psr-4": {
-            "Bagusindrayana\\LaravelMap\\": "src/",
-            "Bagusindrayana\\LaravelMap\\Mapbox\\": "src/mapbox/",
-            "Bagusindrayana\\LaravelMap\\LeafLet\\": "src/leaflet/",
-            "Bagusindrayana\\LaravelMap\\Tests\\": "test/"
+            "Bagusindrayana\\LaravelMap\\": "src"
+            
         }
    
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bagusindrayana\\LaravelMap\\Tests\\": "tests"
+        }
     },
     "extra": {
         "laravel": {
