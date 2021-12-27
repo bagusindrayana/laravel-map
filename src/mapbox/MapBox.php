@@ -66,10 +66,7 @@ class MapBox extends Js
 
     public function baseJs()
     {
-        $js = "
-            mapboxgl.accessToken = '".(($this->accessToken)? $this->accessToken : (function_exists('config')?config('laravel-map.mapbox-access-token'):"") )."';
-            var ".$this->varName." = new mapboxgl.Map(".$this->getOptions().");
-        ";
+        $js = "mapboxgl.accessToken = '".(($this->accessToken)? $this->accessToken : (function_exists('config')?config('laravel-map.mapbox-access-token'):"") )."';\r\nvar ".$this->varName." = new mapboxgl.Map(".$this->getOptions().");\r\n";
 
         return $this->cleanScript($js);
     }
@@ -150,7 +147,7 @@ class MapBox extends Js
         for ($i=0; $i < count($arr); $i++) { 
             $a = $arr[$i];
             if(is_object($a)){
-                $controls .= $this->varName.'.addControl('.$a->result().','.(($a->position)? '"'.$a->position.'"' : null).');';
+                $controls .= $this->varName.'.addControl('.$a->result().','.(($a->position)? '"'.$a->position.'"' : null).');\r\n';
                
             }
         }
@@ -176,7 +173,7 @@ class MapBox extends Js
                 $marker = $m[$i];
                 if(is_object($marker)){
                     $marker->map = $this;
-                    $markers .= "var marker".$i." = ".$marker->result().";";
+                    $markers .= "var marker".$i." = ".$marker->result().";\r\n";
                 } else {
                     throw new \Exception("Parameter given is not Marker Object");
                 }
@@ -209,9 +206,7 @@ class MapBox extends Js
 
     public function addSource($layer,$prop)
     {   
-        $this->extra .= "
-            $this->varName.addSource('".$layer."', ".json_encode($prop).");
-        ";
+        $this->extra .= "$this->varName.addSource('".$layer."', ".json_encode($prop).");\r\n";
     }
 
     public function addEvent($name,$fun)
@@ -226,16 +221,16 @@ class MapBox extends Js
         } else {
             $eventName = "'$name',";
         }
-        $this->extra .= "$this->varName.on($eventName function (e) {";
+        $this->extra .= "$this->varName.on($eventName function (e) {\r\n";
         $fun($this);
-        $this->extra .= "});";
+        $this->extra .= "});\r\n";
     }
 
     
 
     public function addLayer($prop)
     {
-        $this->extra .= "$this->varName.addLayer(".json_encode($prop).");";
+        $this->extra .= "$this->varName.addLayer(".json_encode($prop).");\r\n";
     }
 
     public function locationPicker($opts = null)
@@ -262,17 +257,17 @@ class MapBox extends Js
     {
         $this->extra .= "$this->varName.loadImage('$url', function (error, image) { 
             if (error) throw error;
-                $this->varName.addImage('".($name ?? 'custom-marker')."', image);";
+                $this->varName.addImage('".($name ?? 'custom-marker')."', image);\r\n";
         $fun($this);
-        $this->extra .= "});";
+        $this->extra .= "});\r\n";
     }
 
     public function addImage($id,$img,$opts = null)
     {   
         if(is_array($img)){
-            $this->extra .= $this->varName.".addImage('".$id."',".$img["name"].(($opts)?",".json_encode($opts):"").");";
+            $this->extra .= $this->varName.".addImage('".$id."',".$img["name"].(($opts)?",".json_encode($opts):"").");\r\n";
         } else {
-            $this->extra .= $this->varName.".addImage('".$id."','".$img."'".(($opts)?"',".json_encode($opts):"").");";
+            $this->extra .= $this->varName.".addImage('".$id."','".$img."'".(($opts)?"',".json_encode($opts):"").");\r\n";
         }
     }
 
@@ -300,9 +295,9 @@ class MapBox extends Js
     public function updateImage($id,$img)
     {
         if(is_array($img)){
-            $this->extra .= $this->varName.".updateImage('".$id."',".$img["name"].");";
+            $this->extra .= $this->varName.".updateImage('".$id."',".$img["name"].");\r\n";
         } else {
-            $this->extra .= $this->varName.".updateImage('".$id."','".$img."'".");";
+            $this->extra .= $this->varName.".updateImage('".$id."','".$img."'".");\r\n";
         }
     }
 

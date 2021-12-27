@@ -14,5 +14,6 @@ return array(
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src/Doctrine/Instantiator'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
-    'BagusIndrayana\\LaravelMap\\' => array($baseDir . '/src'),
+    'Bagusindrayana\\LaravelMap\\Tests\\' => array($baseDir . '/tests'),
+    'Bagusindrayana\\LaravelMap\\' => array($baseDir . '/src'),
 );

@@ -38,7 +38,8 @@ class ComposerStaticInitbc725b6579403ee0f864cfe92cce460b
         ),
         'B' => 
         array (
-            'BagusIndrayana\\LaravelMap\\' => 26,
+            'Bagusindrayana\\LaravelMap\\Tests\\' => 32,
+            'Bagusindrayana\\LaravelMap\\' => 26,
         ),
     );
 
@@ -77,7 +78,11 @@ class ComposerStaticInitbc725b6579403ee0f864cfe92cce460b
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
-        'BagusIndrayana\\LaravelMap\\' => 
+        'Bagusindrayana\\LaravelMap\\Tests\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/tests',
+        ),
+        'Bagusindrayana\\LaravelMap\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
