@@ -1,5 +1,5 @@
 <?php
-namespace Bagusindrayana\LaravelMap\MapBox;
+namespace Bagusindrayana\LaravelMap\Mapbox;
 
 class GeolocateControl
 {   
