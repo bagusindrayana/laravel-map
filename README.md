@@ -1,3 +1,9 @@
+# NEW UPDATE
+I previously made this library for practice but some things got really messed up so I remade it from scratch
+
+new library https://github.com/bagusindrayana/laravel-maps
+
+
 # LARAVEL-MAP
 
 > Laravel-Map is laravel package to help you to make and customize map from controller.laravel-map support mapbox and leaflet map
