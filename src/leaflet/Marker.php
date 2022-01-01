@@ -61,8 +61,7 @@ class Marker
     public function addTo($map)
     {
         $this->map = $map;
-        return "var ".$this->markerName." = L.marker(".json_encode($this->latLng).",".$this->getOptions().")
-        .addTo(".$this->map->varName.");";
+        return "var ".$this->markerName." = L.marker(".json_encode($this->latLng).",".$this->getOptions().").addTo(".$this->map->varName.");\r\n";
     }
     public function setPopup($popup)
     {
@@ -72,9 +71,7 @@ class Marker
 
     public function result()
     {
-        return "L.marker(".json_encode($this->latLng).",".$this->getOptions().")
-        ".(($this->popup)? ".bindPopup(".$this->popup->result().").openPopup()" : "" )."
-        .addTo(".$this->map->varName.")";
+        return "L.marker(".json_encode($this->latLng).",".$this->getOptions().")".(($this->popup)? ".bindPopup(".$this->popup->result().").openPopup()" : "" ).".addTo(".$this->map->varName.")";
     }
 
   

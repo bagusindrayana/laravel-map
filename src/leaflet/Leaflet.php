@@ -1,5 +1,5 @@
 <?php
-namespace BagusIndrayana\LaravelMap\Leaflet;
+namespace Bagusindrayana\LaravelMap\Leaflet;
 
 class Leaflet
 {   
@@ -32,9 +32,9 @@ class Leaflet
     public function renderScript()
     {
         $scripts = $this->baseJs();
-        $scripts .= $this->event ?? "";
+        $scripts .= $this->event ?? null;
         $scripts .= $this->varName.".setView(".json_encode($this->center).",".$this->zoom.");\r\n";
-        $scripts .= $this->extra ?? "";
+        $scripts .= $this->extra ?? null;
 
         return $scripts;
     }

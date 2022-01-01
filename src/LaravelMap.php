@@ -25,6 +25,11 @@ class LaravelMap
         
     }
 
+    public function cleanScript($script)
+    {
+        return trim(preg_replace('/\s+/'," ",$script));
+    }
+
     
 
     private function setMap($provider,$opts)

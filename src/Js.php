@@ -30,6 +30,8 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\PostInc;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
@@ -98,6 +100,7 @@ class Js
             $loops = [$loops];
         }
         $this->index = $index;
+       
         foreach ($loops as $kl => $loop) {
             
             if($loop instanceof Function_){
@@ -112,11 +115,27 @@ class Js
                 }
                 $this->extra .= ')';
                 $this->semicolon = true;
-                $this->extra .= '{';
+                $this->extra .= "{\r\n";
                 if($loop->stmts){
                     $this->loop($loop->stmts);
                 }
-                $this->extra .= '}';
+                $this->extra .= ";\r\n}\r\n";
+            } else if($loop instanceof StaticCall){
+                
+                if(isset($loop->class)){
+                    $this->loop($loop->class);
+                }
+                $this->extra .= '.';
+                if(isset($loop->name)){
+                    $this->loop($loop->name);
+                }
+                $this->extra .= '(';
+                $this->semicolon = false;
+                if(isset($loop->args)){
+                    $this->loop($loop->args);
+                }
+                $this->extra .= ')';
+              
             } else if($loop instanceof Expression){
                 
                 
@@ -129,14 +148,13 @@ class Js
                 if($loop->var instanceof Variable){
                     $this->extra .= "var ".$loop->var->name." = ";
                 }
+                $this->semicolon = false;
                 
                 if($loop->expr){
                     $this->loop($loop->expr);
                 }
-
-                if($this->semicolon){
-                    $this->extra .= ";\n";
-                }
+                
+                $this->extra .= ";\r\n";
 
                 
 
@@ -218,13 +236,23 @@ class Js
                     $this->extra .= (@$loop->right->name ?? @$loop->right->value);
                 }
             } else if($loop instanceof MethodCall){
-                
-                if(isset($loop->var) && $loop->var instanceof Variable){
-                    $this->loop($loop->var,@$attr);
+                $this->semicolon = true;
+                if(isset($loop->var)){
+                   
+                    if($loop->var instanceof Variable){
+                        
+                        $this->loop($loop->var,@$attr);
+                    }  else {
+                        $this->semicolon = true;
+                        $this->loop($loop->var);
+                    }
+                    
+                    
                 }
                 $this->extra .= ".";
                 if(is_object($loop->name)){
                     $this->loop($loop->name,@$attr);
+                    
                 }
                 $this->extra .= "(";
                 if(isset($loop->args) && is_array($loop->args)){
@@ -232,7 +260,7 @@ class Js
                 }
                 $this->extra .= ")";
                 if($this->semicolon){
-                    $this->extra .= ";\n";
+                    $this->extra .= ";\r\n";
                 }
                 
             } else if($loop instanceof Arg){
@@ -246,13 +274,20 @@ class Js
                    $this->loop($loop->value,@$attr,$this->index);
                 }
                 
+            } else if($loop instanceof PropertyFetch){
+                if($loop->var){
+                    $this->loop($loop->var);
+                } 
+                $this->extra .= ".";
+                if($loop->name){
+                    $this->loop($loop->name);
+                } 
             } else if($loop instanceof Identifier){
                 if($loop->name){
                     $this->extra .= $loop->name;
-                }
-                
+                } 
             } else if($loop instanceof String_){
-                $this->extra .= "'$loop->value'";
+                $this->extra .= "`$loop->value`";
             } else if($loop instanceof Array_){
                 
                 $this->extra .= @$attr[0] ?? "{";
@@ -303,15 +338,33 @@ class Js
                 
             } else if($loop instanceof FuncCall){
                 if(isset($loop->name)){
-                    $this->loop($loop->name,@$attr);
+                    
+                    switch ($loop->name->parts[0]) {
+                        case 'count':
+                            //$this->loop($loop->name,@$attr);
+                            $this->semicolon = false;
+                            // $this->extra .= "(";
+                            if(isset($loop->args)){
+                                $this->loop($loop->args,@$attr);
+                            }
+                            $this->extra .= ".length";
+                            $this->semicolon = true;
+                            break;
+                        
+                        default:
+                            
+                            $this->loop($loop->name,@$attr);
+                            $this->semicolon = false;
+                            $this->extra .= "(";
+                            if(isset($loop->args)){
+                                $this->loop($loop->args,@$attr);
+                            }
+                            $this->extra .= ")";
+                            $this->semicolon = true;
+                            break;
+                    }
                 }
-                $this->semicolon = false;
-                $this->extra .= "(";
-                if(isset($loop->args)){
-                    $this->loop($loop->args,@$attr);
-                }
-                $this->extra .= ")";
-                $this->semicolon = true;
+                
                 
                 
             } else if($loop instanceof ArrayDimFetch){
@@ -437,7 +490,7 @@ class Js
                 if(isset($loop->left)){
                     $this->loop($loop->left);
                 }
-                $this->extra .= ".";
+                $this->extra .= "+";
                 if(isset($loop->right)){
                     $this->loop($loop->right);
                 }
@@ -479,11 +532,11 @@ class Js
                 if($loop->name){
                     $this->loop($loop->name);
                 }
-                $this->extra .= " {";
+                $this->extra .= " {\r\n";
                 if($loop->stmts){
                     $this->loop($loop->stmts);
                 }
-                $this->extra .= "}";
+                $this->extra .= "}\r\n";
                 
             } else if($loop instanceof ClassMethod){
                 $this->extra .= "function ";
@@ -495,12 +548,12 @@ class Js
                 if($loop->params){
                     $this->loop($loop->params);
                 }
-                $this->extra .= "){";
+                $this->extra .= "){\r\n";
                 $this->semicolon = true;
                 if($loop->stmts){
                     $this->loop($loop->stmts);
                 }
-                $this->extra .= "}";
+                $this->extra .= "}\r\n";
             } else if($loop instanceof For_){
                 $this->extra .= "for(";
                 if($loop->init){
@@ -514,13 +567,13 @@ class Js
                 if($loop->loop){
                     $this->loop($loop->loop);
                 }
-                $this->extra .= "){";
+                $this->extra .= "){\r\n";
 
                 if($loop->stmts){
                     $this->loop($loop->stmts);
                 }
 
-                $this->extra .= "}";  
+                $this->extra .= "}\r\n";  
                 
             } else if($loop instanceof PostInc){
                 if($loop->var){
@@ -544,7 +597,7 @@ class Js
                     $this->extra .= " in ".$loop->expr->name;
                 }   
                 
-                $this->extra .= "){";
+                $this->extra .= "){\r\n";
 
                 if($loop->stmts){
                     $this->loop($loop->stmts);
@@ -556,11 +609,11 @@ class Js
                 if($loop->exprs){
                     $this->loop($loop->exprs);
                 }
-                $this->extra .= ");";  
+                $this->extra .= ");\r\n";  
             }
 
             $this->index ++;
-            $this->semicolon = true;
+            
 
         } 
         
@@ -577,12 +630,18 @@ class Js
         $length = $end_line - $start_line;
     
         $source = file($f);
-        $source = implode('', array_slice($source, 0, count($source)));
-        $source = preg_split("/".PHP_EOL."/", $source);
-    
+        //dd($source);
+        // $source = implode('', array_slice($source, 0, count($source)));
+        // $source = preg_split("/".PHP_EOL."/", $source);
+        
         $body = '';
-        for($i=$start_line; $i<$end_line; $i++)
-            $body.="{$source[$i]}\n";
+        for($i=$start_line; $i<$end_line; $i++){
+            if(isset($source[$i])){
+                $body.="{$source[$i]}\n";
+            }
+            
+        }
+            
         
         return($body);   
     }
@@ -593,10 +652,13 @@ class Js
     {   
       
         $code = "<?php ";
-        $str = $this->get_function($fun);
-       
-        $code .= $str;
-       
+        if(is_string($fun)){
+            $code .= $fun;
+        } else {
+            $str = $this->get_function($fun);
+            $code .= $str;
+        }
+
         $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         try {
             $ast = $parser->parse($code);
@@ -608,43 +670,84 @@ class Js
         $this->loop($ast);
     }
 
-    public static function ajax($type,$url,$datas = null,$headers = null)
+    public function rawJs($raw)
     {   
-        $js = "var xhttp = new XMLHttpRequest();";
-        $js .= "xhttp.open('".$type."', '".$url."', true);";
-        if($headers){
-            foreach ($headers as $key => $value) {
-                $js .= "xhttp.setRequestHeader('".$key."', '".$value."');";
+        
+        $this->extra .= $raw;
+    }
+
+    public static function ajax($type,$url,$options = [])
+    {   
+        $js = "var xhttp = new XMLHttpRequest();\r\n";
+        $js .= "xhttp.open('".$type."', '".$url."', true);\r\n";
+        if(isset($options['header'])){
+            foreach ($options['header'] as $key => $value) {
+                $js .= "xhttp.setRequestHeader('".$key."', '".$value."');\r\n";
             }
         }
         $query = "";
+
+        if(isset($options['onload'])){
+            $query .= "xhttp.onload = function() {\r\n";
+            $query .= $options['onload'];
+            $query .= "\r\n};\r\n";
+        }
         
-        if($datas){
-            if(is_array($datas)){
-                foreach ($datas as $key => $value) {
+        if(isset($options['data'])){
+            if(is_array($options['data'])){
+                foreach ($options['data'] as $key => $value) {
                     $query .= $key."=".$value;
                 }
-                $js .= "xhttp.send('".$query."');";
-            } else {
-                $js = "var xhttp = new XMLHttpRequest();";
-                $js .= "xhttp.open('".$type."', '".$url."?'+".$datas.", true);";
-                if($headers){
-                    foreach ($headers as $key => $value) {
-                        $js .= "xhttp.setRequestHeader('".$key."', '".$value."');";
-                    }
-                }
-                $js .= "xhttp.send();";
+                $js .= "xhttp.send('".$query."');\r\n";
             }
         } else {
-            $js .= "xhttp.send();";
+            $js .= "xhttp.send();\r\n";
         }
 
        
         return $js;
     }
 
-    function result(){
-        return $this->cleanScript($this->extra);
+    public function fetch($url,$options = [],$success = null)
+    {   
+        if(!isset($options['functionName'])){
+            $functionName = "getfetch";
+        } else {
+            $functionName = $options['functionName'];
+            unset($options['functionName']);
+        }
+        $matches = [];
+        preg_match_all("/\\{(.*?)\\}/", $url, $matches); 
+        if(isset($matches[1][0])){
+            $arr = explode("=" , $matches[1][0]);
+            $url = str_replace($matches[0][0], "", $url);
+            $f = "var $functionName = function(".$arr[0]." = `".$arr[1]."`) {
+                return fetch('$url'+".$arr[0].",".json_encode($options).")
+                .then(response => response.json())
+                .then(data => {
+                    return data;
+                });
+            };\r\n";
+        } else {
+            $f = "var $functionName = function() {
+                return fetch('$url',".json_encode($options).")
+                .then(response => response.json())
+                .then(data => {
+                    return data;
+                });
+            };\r\n";
+        }
+        
+        $this->extra = $f.$this->extra;
+        if($success){
+            $this->extra .= "getfetch().then(data => {\r\n";
+                $success($this);
+            $this->extra .= "}).catch(err => console.log(err));\r\n";
+        }
+    }
+
+    function result($clean = true){
+        return $clean ? $this->cleanScript($this->extra): $this->extra;
     }
 
 
